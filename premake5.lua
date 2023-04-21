@@ -1,4 +1,4 @@
-workspace "TrabalhoSO"
+workspace "CsDePobre"
 	configurations { "Debug", "Release" }
 
 raylib_src = "raylib/src"
@@ -13,7 +13,7 @@ project "Raylib"
 	includedirs { raylib_src .. "/external/glfw/include", raylib_src .. "/external/glfw/deps/mingw" }
 	files { "raylib/src/*.c", "raylib/src/*.h" }
 
-project "Trabalho"
+project "CsDePobre"
 	kind "ConsoleApp"
 	language "C"
 	targetdir "bin/%{cfg.buildcfg}"

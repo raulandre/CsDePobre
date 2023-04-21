@@ -37,15 +37,15 @@ endef
 
 ifeq ($(config),debug)
 TARGETDIR = bin/Debug
-TARGET = $(TARGETDIR)/Trabalho
-OBJDIR = obj/Debug/Trabalho
+TARGET = $(TARGETDIR)/CsDePobre
+OBJDIR = obj/Debug/CsDePobre
 LIBS += bin/Debug/libRaylib.a -lm -lglfw
 LDDEPS += bin/Debug/libRaylib.a
 
 else ifeq ($(config),release)
 TARGETDIR = bin/Release
-TARGET = $(TARGETDIR)/Trabalho
-OBJDIR = obj/Release/Trabalho
+TARGET = $(TARGETDIR)/CsDePobre
+OBJDIR = obj/Release/CsDePobre
 LIBS += bin/Release/libRaylib.a -lm -lglfw
 LDDEPS += bin/Release/libRaylib.a
 
@@ -72,7 +72,7 @@ all: $(TARGET)
 
 $(TARGET): $(GENERATED) $(OBJECTS) $(LDDEPS) | $(TARGETDIR)
 	$(PRELINKCMDS)
-	@echo Linking Trabalho
+	@echo Linking CsDePobre
 	$(SILENT) $(LINKCMD)
 	$(POSTBUILDCMDS)
 
@@ -93,7 +93,7 @@ else
 endif
 
 clean:
-	@echo Cleaning Trabalho
+	@echo Cleaning CsDePobre
 ifeq (posix,$(SHELLTYPE))
 	$(SILENT) rm -f  $(TARGET)
 	$(SILENT) rm -rf $(GENERATED)
