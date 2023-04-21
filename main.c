@@ -34,15 +34,15 @@ void *fetchEnemyPlayer() {
 int main(void) {
 	pipe(pipe_p1); pipe(pipe_p2);
 	float heights[MAX_COLUMNS] = { 0 };
-    Vector3 positions[MAX_COLUMNS] = { 0 };
-    Color colors[MAX_COLUMNS] = { 0 };
+	Vector3 positions[MAX_COLUMNS] = { 0 };
+	Color colors[MAX_COLUMNS] = { 0 };
 
-    for (int i = 0; i < MAX_COLUMNS; i++)
-    {
-        heights[i] = (float)GetRandomValue(1, 12);
-        positions[i] = (Vector3){ (float)GetRandomValue(-15, 15), heights[i]/2.0f, (float)GetRandomValue(-15, 15) };
-        colors[i] = (Color){ GetRandomValue(20, 255), GetRandomValue(10, 55), 30, 255 };
-    }
+	for (int i = 0; i < MAX_COLUMNS; i++)
+	{
+		heights[i] = (float)GetRandomValue(1, 12);
+		positions[i] = (Vector3){ (float)GetRandomValue(-15, 15), heights[i]/2.0f, (float)GetRandomValue(-15, 15) };
+		colors[i] = (Color){ GetRandomValue(20, 255), GetRandomValue(10, 55), 30, 255 };
+	}
 
 	pthread_t enemyReceiver;
 	pid_t pid = fork();
@@ -68,16 +68,16 @@ int main(void) {
 			}
 			write(pipe_p1[1], &p, sizeof(Player));
 			BeginDrawing();
-				ClearBackground(SKYBLUE);
-				BeginMode3D(p.camera);
-					DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY);
-					DrawSphere(ep.camera.position, 1, PINK);
-					for (int i = 0; i < MAX_COLUMNS; i++)
-					{
-						DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
-						DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
-					}
-				EndMode3D();
+			ClearBackground(SKYBLUE);
+			BeginMode3D(p.camera);
+			DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY);
+			DrawSphere(ep.camera.position, 1, PINK);
+			for (int i = 0; i < MAX_COLUMNS; i++)
+			{
+				DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
+				DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
+			}
+			EndMode3D();
 			EndDrawing();
 		}
 
@@ -104,16 +104,16 @@ int main(void) {
 			}
 			write(pipe_p2[1], &p, sizeof(Player));
 			BeginDrawing();
-				ClearBackground(SKYBLUE);
-				BeginMode3D(p.camera);
-					DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY);
-					DrawSphere(ep.camera.position, 1, PINK);
-					for (int i = 0; i < MAX_COLUMNS; i++)
-					{
-						DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
-						DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
-					}
-				EndMode3D();
+			ClearBackground(SKYBLUE);
+			BeginMode3D(p.camera);
+			DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY);
+			DrawSphere(ep.camera.position, 1, PINK);
+			for (int i = 0; i < MAX_COLUMNS; i++)
+			{
+				DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
+				DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
+			}
+			EndMode3D();
 			EndDrawing();
 		}
 
