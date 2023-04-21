@@ -66,12 +66,13 @@ int main(void) {
 			} else if(IsKeyPressed(KEY_LEFT_ALT)) {
 				EnableCursor();
 			}
+			Vector3 pos = (Vector3){ ep.camera.position.x, ep.camera.position.y - 3, ep.camera.position.z };
 			write(pipe_p1[1], &p, sizeof(Player));
 			BeginDrawing();
 			ClearBackground(SKYBLUE);
 			BeginMode3D(p.camera);
 			DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY);
-			DrawSphere(ep.camera.position, 1, PINK);
+			DrawCylinder(pos, 1, 1, 3, 100, PINK);
 			for (int i = 0; i < MAX_COLUMNS; i++)
 			{
 				DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
@@ -102,12 +103,13 @@ int main(void) {
 			} else if(IsKeyPressed(KEY_LEFT_ALT)) {
 				EnableCursor();
 			}
+			Vector3 pos = (Vector3){ ep.camera.position.x, ep.camera.position.y - 3, ep.camera.position.z };
 			write(pipe_p2[1], &p, sizeof(Player));
 			BeginDrawing();
 			ClearBackground(SKYBLUE);
 			BeginMode3D(p.camera);
 			DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY);
-			DrawSphere(ep.camera.position, 1, PINK);
+			DrawCylinder(pos, 1, 1, 3, 100, PINK);
 			for (int i = 0; i < MAX_COLUMNS; i++)
 			{
 				DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
