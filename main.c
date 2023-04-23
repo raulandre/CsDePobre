@@ -20,7 +20,9 @@ typedef struct {
 	int id;
 	Camera3D camera;
 	bool dead;
+	int hp;
 } Player;
+
 Player p, ep;
 float heights[MAX_COLUMNS] = { 0 };
 Vector3 positions[MAX_COLUMNS] = { 0 };
@@ -32,11 +34,14 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 int main(void) {
 	pipe(pipe_p1); pipe(pipe_p2);
 
-	for (int i = 0; i < MAX_COLUMNS; i++)
-	{
+	for (int i = 0; i < MAX_COLUMNS; i++) {
 		heights[i] = (float)GetRandomValue(1, 12);
 		positions[i] = (Vector3){ (float)GetRandomValue(-15, 15), heights[i]/2.0f, (float)GetRandomValue(-15, 15) };
-		colors[i] = (Color){ GetRandomValue(20, 255), GetRandomValue(10, 55), 30, 255 };
+		if(GetRandomValue(1, 2) == 1) {
+			colors[i] = YELLOW;
+		} else {
+			colors[i] = SKYBLUE;
+		}
 	}
 
 	pthread_t enemyReceiver;
@@ -66,15 +71,18 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 	p->camera.up = (Vector3) { 0.0, 1.0, 0.0 };
 	p->camera.fovy = 60.0;
 	p->camera.projection = CAMERA_PERSPECTIVE;
+	p->hp = 100;
 
 	pthread_create(enemyReceiver, NULL, fetchEnemyPlayer, &read_id);
 
+	SetConfigFlags(FLAG_MSAA_4X_HINT);
 	InitWindow(WIDTH, HEIGHT, TextFormat("Player %d", id));
 	SetTargetFPS(60);
 	bool cursorDisabled = false;
 	while(!WindowShouldClose()) {
 		if(cursorDisabled)
 			UpdateCamera(&p->camera, CAMERA_FIRST_PERSON);
+
 		if(IsKeyPressed(KEY_SPACE)) {
 			DisableCursor();
 			cursorDisabled = true;
@@ -88,7 +96,7 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 
 		write(write_id, p, sizeof(Player));
 		BeginDrawing();
-		ClearBackground(SKYBLUE);
+		ClearBackground(BLACK);
 		BeginMode3D(p->camera);
 		DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY);
 		if(!ep->dead)
@@ -96,10 +104,14 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 		for (int i = 0; i < MAX_COLUMNS; i++)
 		{
 			DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
-			DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
+			DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, WHITE);
 		}
 		EndMode3D();
-			DrawText("+", WIDTH / 2 - crosshairPos, HEIGHT / 2 - crosshairPos, CROSSHAIR_SIZE, CROSSHAIR_COLOR);
+
+		DrawText("+", WIDTH / 2 - crosshairPos, HEIGHT / 2 - crosshairPos, CROSSHAIR_SIZE, CROSSHAIR_COLOR);
+		const char *hp = TextFormat("%d%%", p->hp);
+		int hpPos = MeasureText(hp, 40);
+		DrawText(hp, 10, HEIGHT - hpPos / 2, 40, CROSSHAIR_COLOR);
 		EndDrawing();
 	}
 
