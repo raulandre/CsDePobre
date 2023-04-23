@@ -72,7 +72,8 @@ int main(void) {
 			ClearBackground(SKYBLUE);
 			BeginMode3D(p.camera);
 			DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY);
-			DrawCylinder(pos, 1, 1, 3, 100, PINK);
+			if(!ep.dead)
+				DrawCylinder(pos, 1, 1, 3, 100, PINK);
 			for (int i = 0; i < MAX_COLUMNS; i++)
 			{
 				DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
@@ -82,7 +83,11 @@ int main(void) {
 			EndDrawing();
 		}
 
-		pthread_join(enemyReceiver, NULL);
+		p.dead = 1;
+		write(pipe_p1[1], &p, sizeof(Player));
+		pthread_cancel(enemyReceiver);
+		close(pipe_p1[1]);
+		close(pipe_p2[0]);
 	} else if(pid == 0) {
 		p.id = 2;
 		p.dead = 0;
@@ -104,12 +109,13 @@ int main(void) {
 				EnableCursor();
 			}
 			Vector3 pos = (Vector3){ ep.camera.position.x, ep.camera.position.y - 3, ep.camera.position.z };
-			write(pipe_p2[1], &p, sizeof(Player));
+			if(write(pipe_p2[1], &p, sizeof(Player)) == -1) break;
 			BeginDrawing();
 			ClearBackground(SKYBLUE);
 			BeginMode3D(p.camera);
 			DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY);
-			DrawCylinder(pos, 1, 1, 3, 100, PINK);
+			if(!ep.dead)
+				DrawCylinder(pos, 1, 1, 3, 100, PINK);
 			for (int i = 0; i < MAX_COLUMNS; i++)
 			{
 				DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
@@ -119,7 +125,11 @@ int main(void) {
 			EndDrawing();
 		}
 
-		pthread_join(enemyReceiver, NULL);
+		p.dead = 1;
+		write(pipe_p2[1], &p, sizeof(Player));
+		pthread_cancel(enemyReceiver);
+		close(pipe_p1[0]);
+		close(pipe_p2[1]);
 	}
 
 	return EXIT_SUCCESS;
