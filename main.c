@@ -108,7 +108,7 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 		}
 		EndMode3D();
 
-		DrawText("+", WIDTH / 2 - crosshairPos, HEIGHT / 2 - crosshairPos, CROSSHAIR_SIZE, CROSSHAIR_COLOR);
+		DrawText("+", WIDTH / 2 - crosshairPos / 2, HEIGHT / 2 - crosshairPos, CROSSHAIR_SIZE, CROSSHAIR_COLOR);
 		const char *hp = TextFormat("%d%%", p->hp);
 		int hpPos = MeasureText(hp, 40);
 		DrawText(hp, 10, HEIGHT - hpPos / 2, 40, CROSSHAIR_COLOR);
