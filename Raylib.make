@@ -19,16 +19,12 @@ endif
 # #############################################
 
 RESCOMP = windres
-DEFINES += -D_GNU_SOURCE -DPLATFORM_DESKTOP -DGRAPHICS_API_OPENGL_33
 INCLUDES += -Iraylib/src/external/glfw/include -Iraylib/src/external/glfw/deps/mingw
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
-ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -Wall -Wno-missing-braces -Werror=pointer-arith -fno-strict-aliasing -std=c99 -fPIC -O1 -Werror=implicit-function-declaration
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -Wall -Wno-missing-braces -Werror=pointer-arith -fno-strict-aliasing -std=c99 -fPIC -O1 -Werror=implicit-function-declaration
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
 LIBS +=
 LDDEPS +=
-ALL_LDFLAGS += $(LDFLAGS) -s
 LINKCMD = $(AR) -rcs "$@" $(OBJECTS)
 define PREBUILDCMDS
 endef
@@ -41,11 +37,19 @@ ifeq ($(config),debug)
 TARGETDIR = bin/Debug
 TARGET = $(TARGETDIR)/libRaylib.a
 OBJDIR = obj/Debug/Raylib
+DEFINES += -D_GNU_SOURCE -DPLATFORM_DESKTOP -DGRAPHICS_API_OPENGL_33 -DDEBUG
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g -Wall -Wno-missing-braces -Werror=pointer-arith -fno-strict-aliasing -std=c99 -fPIC -O1 -Werror=implicit-function-declaration
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -g -Wall -Wno-missing-braces -Werror=pointer-arith -fno-strict-aliasing -std=c99 -fPIC -O1 -Werror=implicit-function-declaration
+ALL_LDFLAGS += $(LDFLAGS)
 
 else ifeq ($(config),release)
 TARGETDIR = bin/Release
 TARGET = $(TARGETDIR)/libRaylib.a
 OBJDIR = obj/Release/Raylib
+DEFINES += -D_GNU_SOURCE -DPLATFORM_DESKTOP -DGRAPHICS_API_OPENGL_33 -DRELEASE
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2 -Wall -Wno-missing-braces -Werror=pointer-arith -fno-strict-aliasing -std=c99 -fPIC -O1 -Werror=implicit-function-declaration
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -O2 -Wall -Wno-missing-braces -Werror=pointer-arith -fno-strict-aliasing -std=c99 -fPIC -O1 -Werror=implicit-function-declaration
+ALL_LDFLAGS += $(LDFLAGS) -s
 
 endif
 

@@ -19,14 +19,10 @@ endif
 # #############################################
 
 RESCOMP = windres
-DEFINES +=
 INCLUDES += -Iraylib/src
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
-ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -pthread
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -pthread
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-ALL_LDFLAGS += $(LDFLAGS) -s
 LINKCMD = $(CC) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
 define PREBUILDCMDS
 endef
@@ -39,15 +35,23 @@ ifeq ($(config),debug)
 TARGETDIR = bin/Debug
 TARGET = $(TARGETDIR)/CsDePobre
 OBJDIR = obj/Debug/CsDePobre
+DEFINES += -DDEBUG
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g -pthread
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -g -pthread
 LIBS += bin/Debug/libRaylib.a -lm -lglfw
 LDDEPS += bin/Debug/libRaylib.a
+ALL_LDFLAGS += $(LDFLAGS)
 
 else ifeq ($(config),release)
 TARGETDIR = bin/Release
 TARGET = $(TARGETDIR)/CsDePobre
 OBJDIR = obj/Release/CsDePobre
+DEFINES += -DRELEASE
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2 -pthread
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -O2 -pthread
 LIBS += bin/Release/libRaylib.a -lm -lglfw
 LDDEPS += bin/Release/libRaylib.a
+ALL_LDFLAGS += $(LDFLAGS) -s
 
 endif
 

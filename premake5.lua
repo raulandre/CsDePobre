@@ -13,6 +13,13 @@ project "Raylib"
 	includedirs { raylib_src .. "/external/glfw/include", raylib_src .. "/external/glfw/deps/mingw" }
 	files { "raylib/src/*.c", "raylib/src/*.h" }
 
+	filter "configurations:Debug"
+		defines { "DEBUG" }
+		symbols "On"
+	filter "configurations:Release"
+		defines { "RELEASE" }
+		optimize "On"
+
 project "CsDePobre"
 	kind "ConsoleApp"
 	language "C"
@@ -23,3 +30,10 @@ project "CsDePobre"
 	links { "Raylib", "m", "glfw" }
 	buildoptions { "-pthread" }
 	files { "*.c", "*.h" }
+
+	filter "configurations:Debug"
+		defines { "DEBUG" }
+		symbols "On"
+	filter "configurations:Release"
+		defines { "RELEASE" }
+		optimize "On"

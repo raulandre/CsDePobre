@@ -8,6 +8,9 @@
 #define WIDTH 800
 #define HEIGHT 600
 #define MAX_COLUMNS 20
+#define CROSSHAIR "+"
+#define CROSSHAIR_SIZE 28
+#define CROSSHAIR_COLOR DARKGREEN
 
 // [0] para leitura, [1] para escrita
 int pipe_p1[2];
@@ -79,7 +82,10 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 			EnableCursor();
 			cursorDisabled = false;
 		}
+
 		Vector3 pos = (Vector3){ ep->camera.position.x, ep->camera.position.y - 3, ep->camera.position.z };
+		int crosshairPos = MeasureText(CROSSHAIR, 28);
+
 		write(write_id, p, sizeof(Player));
 		BeginDrawing();
 		ClearBackground(SKYBLUE);
@@ -93,6 +99,7 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 			DrawCubeWires(positions[i], 2.0f, heights[i], 2.0f, MAROON);
 		}
 		EndMode3D();
+			DrawText("+", WIDTH / 2 - crosshairPos, HEIGHT / 2 - crosshairPos, CROSSHAIR_SIZE, CROSSHAIR_COLOR);
 		EndDrawing();
 	}
 
