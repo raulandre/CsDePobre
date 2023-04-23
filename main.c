@@ -23,14 +23,7 @@ float heights[MAX_COLUMNS] = { 0 };
 Vector3 positions[MAX_COLUMNS] = { 0 };
 Color colors[MAX_COLUMNS] = { 0 };
 
-void *fetchEnemyPlayer(void *rid) {
-	int read_id = *(int*)rid;
-	while(1) {
-		read(read_id, &ep, sizeof(Player)); 
-	}
-	return EXIT_SUCCESS;
-}
-
+void *fetchEnemyPlayer(void *rid);
 void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_t write_id, pid_t read_id);
 
 int main(void) {
@@ -51,6 +44,14 @@ int main(void) {
 		processPlayer(2, &p, &ep, &enemyReceiver, pipe_p2[1], pipe_p1[0]);
 	}
 
+	return EXIT_SUCCESS;
+}
+
+void *fetchEnemyPlayer(void *rid) {
+	int read_id = *(int*)rid;
+	while(1) {
+		read(read_id, &ep, sizeof(Player)); 
+	}
 	return EXIT_SUCCESS;
 }
 
