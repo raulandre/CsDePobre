@@ -68,12 +68,16 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 
 	InitWindow(WIDTH, HEIGHT, TextFormat("Player %d", id));
 	SetTargetFPS(60);
+	bool cursorDisabled = false;
 	while(!WindowShouldClose()) {
-		UpdateCamera(&p->camera, CAMERA_FIRST_PERSON);
+		if(cursorDisabled)
+			UpdateCamera(&p->camera, CAMERA_FIRST_PERSON);
 		if(IsKeyPressed(KEY_SPACE)) {
 			DisableCursor();
+			cursorDisabled = true;
 		} else if(IsKeyPressed(KEY_LEFT_ALT)) {
 			EnableCursor();
+			cursorDisabled = false;
 		}
 		Vector3 pos = (Vector3){ ep->camera.position.x, ep->camera.position.y - 3, ep->camera.position.z };
 		write(write_id, p, sizeof(Player));
