@@ -32,7 +32,10 @@ void *fetchEnemyPlayer(void *rid);
 void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_t write_id, pid_t read_id);
 
 int main(void) {
-	pipe(pipe_p1); pipe(pipe_p2);
+	if(pipe(pipe_p1) < 0 ||  pipe(pipe_p2) < 0) {
+		fprintf(stderr, "Erro no procedimento pipe\n");
+		return EXIT_FAILURE;
+	}
 
 	for (int i = 0; i < MAX_COLUMNS; i++) {
 		heights[i] = (float)GetRandomValue(1, 12);
@@ -50,6 +53,9 @@ int main(void) {
 		processPlayer(1, &p, &ep, &enemyReceiver, pipe_p1[1], pipe_p2[0]);
 	} else if(pid == 0) {
 		processPlayer(2, &p, &ep, &enemyReceiver, pipe_p2[1], pipe_p1[0]);
+	} else {
+		fprintf(stderr, "Erro no procedimento fork\n");
+		return EXIT_FAILURE;
 	}
 
 	return EXIT_SUCCESS;
@@ -58,7 +64,9 @@ int main(void) {
 void *fetchEnemyPlayer(void *rid) {
 	int read_id = *(int*)rid;
 	while(1) {
-		read(read_id, &ep, sizeof(Player)); 
+		if(read(read_id, &ep, sizeof(Player)) != sizeof(Player)) {
+			fprintf(stderr, "\nFalha ao ler player no pipe %d\n", read_id);
+		}
 	}
 	return EXIT_SUCCESS;
 }
@@ -94,7 +102,9 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 		Vector3 pos = (Vector3){ ep->camera.position.x, ep->camera.position.y - 3, ep->camera.position.z };
 		int crosshairPos = MeasureText(CROSSHAIR, 28);
 
-		write(write_id, p, sizeof(Player));
+		if(write(write_id, p, sizeof(Player)) != sizeof(Player)) {
+			fprintf(stderr, "\nErro ao escrever para o player %d\n", (id == 1 ? 2 : 1));
+		}
 		BeginDrawing();
 		ClearBackground(BLACK);
 		BeginMode3D(p->camera);
@@ -120,4 +130,5 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 	pthread_cancel(*enemyReceiver);
 	close(write_id);
 	close(read_id);
+	exit(EXIT_SUCCESS);
 }
