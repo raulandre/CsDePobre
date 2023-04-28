@@ -1,4 +1,4 @@
-workspace "CsDePobre"
+workspace "TrabalhoSO"
 	configurations { "Debug", "Release" }
 
 raylib_src = "raylib/src"
@@ -20,7 +20,7 @@ project "Raylib"
 		defines { "RELEASE" }
 		optimize "On"
 
-project "CsDePobre"
+project "Projeto"
 	kind "ConsoleApp"
 	language "C"
 	targetdir "bin/%{cfg.buildcfg}"

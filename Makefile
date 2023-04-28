@@ -10,17 +10,17 @@ endif
 
 ifeq ($(config),debug)
   Raylib_config = debug
-  CsDePobre_config = debug
+  Projeto_config = debug
 
 else ifeq ($(config),release)
   Raylib_config = release
-  CsDePobre_config = release
+  Projeto_config = release
 
 else
   $(error "invalid configuration $(config)")
 endif
 
-PROJECTS := Raylib CsDePobre
+PROJECTS := Raylib Projeto
 
 .PHONY: all clean help $(PROJECTS) 
 
@@ -32,15 +32,15 @@ ifneq (,$(Raylib_config))
 	@${MAKE} --no-print-directory -C . -f Raylib.make config=$(Raylib_config)
 endif
 
-CsDePobre: Raylib
-ifneq (,$(CsDePobre_config))
-	@echo "==== Building CsDePobre ($(CsDePobre_config)) ===="
-	@${MAKE} --no-print-directory -C . -f CsDePobre.make config=$(CsDePobre_config)
+Projeto: Raylib
+ifneq (,$(Projeto_config))
+	@echo "==== Building Projeto ($(Projeto_config)) ===="
+	@${MAKE} --no-print-directory -C . -f Projeto.make config=$(Projeto_config)
 endif
 
 clean:
 	@${MAKE} --no-print-directory -C . -f Raylib.make clean
-	@${MAKE} --no-print-directory -C . -f CsDePobre.make clean
+	@${MAKE} --no-print-directory -C . -f Projeto.make clean
 
 help:
 	@echo "Usage: make [config=name] [target]"
@@ -53,6 +53,6 @@ help:
 	@echo "   all (default)"
 	@echo "   clean"
 	@echo "   Raylib"
-	@echo "   CsDePobre"
+	@echo "   Projeto"
 	@echo ""
 	@echo "For more information, see https://github.com/premake/premake-core/wiki"

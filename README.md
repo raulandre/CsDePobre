@@ -1,4 +1,4 @@
-# CsDePobre
+# Trabalho S.O
 ![build](https://github.com/raulandre/CsDePobre/actions/workflows/makefile.yml/badge.svg)    
 
 Projeto desenvolvido para a disciplina de *Sistemas Operacionais*, utilizando [raylib](https://github.com/raysan5/raylib), pipes e threads

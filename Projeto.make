@@ -33,8 +33,8 @@ endef
 
 ifeq ($(config),debug)
 TARGETDIR = bin/Debug
-TARGET = $(TARGETDIR)/CsDePobre
-OBJDIR = obj/Debug/CsDePobre
+TARGET = $(TARGETDIR)/Projeto
+OBJDIR = obj/Debug/Projeto
 DEFINES += -DDEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g -pthread
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -g -pthread
@@ -44,8 +44,8 @@ ALL_LDFLAGS += $(LDFLAGS)
 
 else ifeq ($(config),release)
 TARGETDIR = bin/Release
-TARGET = $(TARGETDIR)/CsDePobre
-OBJDIR = obj/Release/CsDePobre
+TARGET = $(TARGETDIR)/Projeto
+OBJDIR = obj/Release/Projeto
 DEFINES += -DRELEASE
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2 -pthread
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -O2 -pthread
@@ -76,7 +76,7 @@ all: $(TARGET)
 
 $(TARGET): $(GENERATED) $(OBJECTS) $(LDDEPS) | $(TARGETDIR)
 	$(PRELINKCMDS)
-	@echo Linking CsDePobre
+	@echo Linking Projeto
 	$(SILENT) $(LINKCMD)
 	$(POSTBUILDCMDS)
 
@@ -97,7 +97,7 @@ else
 endif
 
 clean:
-	@echo Cleaning CsDePobre
+	@echo Cleaning Projeto
 ifeq (posix,$(SHELLTYPE))
 	$(SILENT) rm -f  $(TARGET)
 	$(SILENT) rm -rf $(GENERATED)
