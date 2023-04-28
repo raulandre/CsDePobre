@@ -20,7 +20,6 @@ typedef struct {
 	int id;
 	Camera3D camera;
 	bool dead;
-	int hp;
 } Player;
 
 Player p, ep;
@@ -38,8 +37,8 @@ int main(void) {
 	}
 
 	for (int i = 0; i < MAX_COLUMNS; i++) {
-		heights[i] = (float)GetRandomValue(1, 12);
-		positions[i] = (Vector3){ (float)GetRandomValue(-15, 15), heights[i]/2.0f, (float)GetRandomValue(-15, 15) };
+		positions[i] = (Vector3){ GetRandomValue(-15, 15), heights[i]/2.0f, GetRandomValue(-15, 15) };
+		heights[i] = GetRandomValue(1, 12);
 		if(GetRandomValue(1, 2) == 1) {
 			colors[i] = YELLOW;
 		} else {
@@ -63,7 +62,7 @@ int main(void) {
 
 void *fetchEnemyPlayer(void *rid) {
 	int read_id = *(int*)rid;
-	while(1) {
+	while(!ep.dead) {
 		if(read(read_id, &ep, sizeof(Player)) != sizeof(Player)) {
 			fprintf(stderr, "\nFalha ao ler player no pipe %d\n", read_id);
 		}
@@ -79,7 +78,6 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 	p->camera.up = (Vector3) { 0.0, 1.0, 0.0 };
 	p->camera.fovy = 60.0;
 	p->camera.projection = CAMERA_PERSPECTIVE;
-	p->hp = 100;
 
 	pthread_create(enemyReceiver, NULL, fetchEnemyPlayer, &read_id);
 
@@ -102,15 +100,18 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 		Vector3 pos = (Vector3){ ep->camera.position.x, ep->camera.position.y - 3, ep->camera.position.z };
 		int crosshairPos = MeasureText(CROSSHAIR, 28);
 
-		if(write(write_id, p, sizeof(Player)) != sizeof(Player)) {
-			fprintf(stderr, "\nErro ao escrever para o player %d\n", (id == 1 ? 2 : 1));
+		if(!ep->dead) {
+			if(write(write_id, p, sizeof(Player)) != sizeof(Player)) {
+				fprintf(stderr, "\nErro ao escrever para o player %d\n", (id == 1 ? 2 : 1));
+			}
 		}
 		BeginDrawing();
 		ClearBackground(BLACK);
 		BeginMode3D(p->camera);
 		DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY);
-		if(!ep->dead)
+		if(!ep->dead) {
 			DrawCylinder(pos, 1, 1, 3, 100, PINK);
+		}
 		for (int i = 0; i < MAX_COLUMNS; i++)
 		{
 			DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
@@ -119,9 +120,6 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 		EndMode3D();
 
 		DrawText("+", WIDTH / 2 - crosshairPos / 2, HEIGHT / 2 - crosshairPos, CROSSHAIR_SIZE, CROSSHAIR_COLOR);
-		const char *hp = TextFormat("%d%%", p->hp);
-		int hpPos = MeasureText(hp, 40);
-		DrawText(hp, 10, HEIGHT - hpPos / 2, 40, CROSSHAIR_COLOR);
 		EndDrawing();
 	}
 
