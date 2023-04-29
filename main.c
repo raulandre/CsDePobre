@@ -73,8 +73,8 @@ void *fetchEnemyPlayer(void *rid) {
 void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_t write_id , pid_t read_id) {
 	p->id = id;
 	p->dead = 0;
-	p->camera.position = (Vector3) { -5.0, 3.0, 0.0 };
-	p->camera.target = (Vector3) { 5.0, 3.0, 0.0 };
+	p->camera.position = (Vector3) { -5.0, 3.0, 0.0 }; if(id == 2) { p->camera.position.x *= -1; }
+	p->camera.target = (Vector3) { 5.0, 3.0, 0.0 }; if(id == 2) { p->camera.target.x *= - 1; }
 	p->camera.up = (Vector3) { 0.0, 1.0, 0.0 };
 	p->camera.fovy = 60.0;
 	p->camera.projection = CAMERA_PERSPECTIVE;
@@ -84,6 +84,16 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 	SetConfigFlags(FLAG_MSAA_4X_HINT);
 	InitWindow(WIDTH, HEIGHT, TextFormat("Player %d", id));
 	SetTargetFPS(60);
+
+	switch(id) {
+		case 1:
+			SetWindowPosition(0, GetScreenHeight() / 2);
+			break;
+		case 2:
+			SetWindowPosition(GetScreenWidth() / 2 + WIDTH, GetScreenHeight() / 2);
+			break;
+	}
+
 	bool cursorDisabled = false;
 	while(!WindowShouldClose()) {
 		if(cursorDisabled)
@@ -105,13 +115,20 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 				fprintf(stderr, "\nErro ao escrever para o player %d\n", (id == 1 ? 2 : 1));
 			}
 		}
+
 		BeginDrawing();
 		ClearBackground(BLACK);
+		if(!cursorDisabled)
+			DrawText("Pressione espaço para interagir", 10, 10, 16, GREEN);
+		else
+			DrawText("Pressione alt esq. para liberar o cursor", 10, 10, 16, GREEN);
 		BeginMode3D(p->camera);
 		DrawPlane((Vector3){ 0.0f, 0.0f, 0.0f }, (Vector2){ 32.0f, 32.0f }, LIGHTGRAY);
+
 		if(!ep->dead) {
 			DrawCylinder(pos, 1, 1, 3, 100, PINK);
 		}
+
 		for (int i = 0; i < MAX_COLUMNS; i++)
 		{
 			DrawCube(positions[i], 2.0f, heights[i], 2.0f, colors[i]);
