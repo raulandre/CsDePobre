@@ -79,7 +79,10 @@ void processPlayer(int id, Player *p, Player *ep, pthread_t *enemyReceiver, pid_
 	p->camera.fovy = 60.0;
 	p->camera.projection = CAMERA_PERSPECTIVE;
 
-	pthread_create(enemyReceiver, NULL, fetchEnemyPlayer, &read_id);
+	if(pthread_create(enemyReceiver, NULL, fetchEnemyPlayer, &read_id) != 0) {
+		fprintf(stderr, "Erro ao criar thread\n");
+		exit(EXIT_FAILURE);
+	}
 
 	SetConfigFlags(FLAG_MSAA_4X_HINT);
 	InitWindow(WIDTH, HEIGHT, TextFormat("Player %d", id));
